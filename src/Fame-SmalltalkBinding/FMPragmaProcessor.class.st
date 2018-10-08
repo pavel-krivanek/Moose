@@ -218,7 +218,7 @@ FMPragmaProcessor >> processClass: aClass ifPragmaAbsent: anErrorBlock [
 	elements add: meta.
 	classDict at: aClass put: meta.
 	aClass methods do: [ :each | self processCompiledMethod: each ].
-	aClass slots do: [ :each | self processSlot: each in: aClass].
+	(aClass slots, (aClass traits flatCollect: #slots)) do: [ :each | self processSlot: each in: aClass].
 	meta isFM3Class should beTrue.
 	^ meta
 ]
