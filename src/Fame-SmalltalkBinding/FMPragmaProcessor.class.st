@@ -67,12 +67,6 @@ FMPragmaProcessor class >> shouldValidateMetaModel: anObject [
 	ShouldValidateMetaModel := anObject
 ]
 
-{ #category : #private }
-FMPragmaProcessor >> allowPackageNamed: packageName [
-	"generic method for subclass specilization"
-	^ true
-]
-
 { #category : #converting }
 FMPragmaProcessor >> asMetamodel [
 	| mm |
@@ -176,6 +170,12 @@ FMPragmaProcessor >> initialize [
 		put: FM3MetaDescription object
 ]
 
+{ #category : #private }
+FMPragmaProcessor >> packageNameAllowed: packageName [
+	"generic method for subclass specilization"
+	^ true
+]
+
 { #category : #accessing }
 FMPragmaProcessor >> packages [
 	^ elements select: [ :e | e isFM3Package ]
@@ -212,7 +212,7 @@ FMPragmaProcessor >> processClass: aClass ifPragmaAbsent: anErrorBlock [
 				ifNotNil: [ :p | 
 					| packageName |
 					packageName := p argumentAt: 1.
-					(self allowPackageNamed: packageName)
+					(self packageNameAllowed: packageName)
 						ifFalse: [ ^ self ].
 					packMetaDict at: meta put: packageName asString ] ].
 	elements add: meta.
@@ -234,7 +234,7 @@ FMPragmaProcessor >> processCompiledMethod: aMethod [
 		ifNotNil: [ :p | 
 			| packageName |
 			packageName := p argumentAt: 1.
-			(self allowPackageNamed: packageName)
+			(self packageNameAllowed: packageName)
 				ifFalse: [ ^ self ].
 			packPropDict at: prop put: packageName ].
 	"we check the package first because if we do not want to load it,
@@ -277,7 +277,7 @@ FMPragmaProcessor >> processSlot: aSlot in: aClass [
 		(Pragma inMethod: aMethod named: #package:) ifNotNil: [ :p | 
 			| packageName |
 			packageName := p argumentAt: 1.
-			(self allowPackageNamed: packageName)
+			(self packageNameAllowed: packageName)
 				ifFalse: [ ^ self ].
 			packPropDict at: prop put: packageName ].
 
